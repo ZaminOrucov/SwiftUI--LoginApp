@@ -1,61 +1,161 @@
-//
-//  ContentView.swift
-//  LoginFormUI
-//
-//  Created by Zamin Orucov on 8/19/25.
-//
-
 import SwiftUI
-import SwiftData
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
-
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
-                }
-                .onDelete(perform: deleteItems)
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-        } detail: {
-            Text("Select an item")
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
+        NavigationView {
+            LoginView()
         }
     }
 }
 
-#Preview {
-    ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+// MARK: - Login View
+struct LoginView: View {
+    @State private var email: String = ""
+    @State private var password: String = ""
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            // App Logo
+            Image(systemName: "lock.shield.fill")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 90, height: 90)
+                .foregroundColor(.blue)
+                .padding(.bottom, 30)
+            
+            Text("Welcome Back")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+            
+            Text("Login to continue")
+                .foregroundColor(.gray)
+            
+            // Email
+            TextField("Email", text: $email)
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(12)
+                .autocapitalization(.none)
+                .keyboardType(.emailAddress)
+            
+            // Password
+            SecureField("Password", text: $password)
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(12)
+            
+            // Login button
+            Button(action: {
+                // login logic
+            }) {
+                Text("Login")
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.blue)
+                    .cornerRadius(12)
+                    .shadow(radius: 5)
+            }
+            .padding(.top, 10)
+            
+            // Forgot password
+            Button("Forgot Password?") {
+                // reset logic
+            }
+            .foregroundColor(.blue)
+            .padding(.top, 5)
+            
+            Spacer()
+            
+            // Sign up redirect
+            HStack {
+                Text("Don't have an account?")
+                NavigationLink(destination: SignUpView()) {
+                    Text("Sign Up")
+                        .fontWeight(.bold)
+                        .foregroundColor(.blue)
+                }
+            }
+            .padding(.bottom, 30)
+        }
+        .padding()
+    }
+}
+
+// MARK: - Sign Up View
+struct SignUpView: View {
+    @State private var name: String = ""
+    @State private var email: String = ""
+    @State private var password: String = ""
+    @State private var confirmPassword: String = ""
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            Image(systemName: "person.crop.circle.badge.plus")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 90, height: 90)
+                .foregroundColor(.blue)
+                .padding(.bottom, 30)
+            
+            Text("Create Account")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+            
+            TextField("Full Name", text: $name)
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(12)
+            
+            TextField("Email", text: $email)
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(12)
+                .keyboardType(.emailAddress)
+                .autocapitalization(.none)
+            
+            SecureField("Password", text: $password)
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(12)
+            
+            SecureField("Confirm Password", text: $confirmPassword)
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(12)
+            
+            Button(action: {
+                // signup logic
+            }) {
+                Text("Sign Up")
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.blue)
+                    .cornerRadius(12)
+                    .shadow(radius: 5)
+            }
+            .padding(.top, 10)
+            
+            Spacer()
+            
+            HStack {
+                Text("Already have an account?")
+                NavigationLink(destination: LoginView()) {
+                    Text("Login")
+                        .fontWeight(.bold)
+                        .foregroundColor(.blue)
+                }
+            }
+            .padding(.bottom, 30)
+        }
+        .padding()
+    }
+}
+
+// MARK: - Preview
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
 }
