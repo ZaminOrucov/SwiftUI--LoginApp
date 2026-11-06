@@ -7,15 +7,12 @@ struct ContentView: View {
         }
     }
 }
-
-// MARK: - Login View
 struct LoginView: View {
     @State private var email: String = ""
     @State private var password: String = ""
     
     var body: some View {
         VStack(spacing: 20) {
-            // App Logo
             Image(systemName: "lock.shield.fill")
                 .resizable()
                 .scaledToFit()
@@ -30,7 +27,6 @@ struct LoginView: View {
             Text("Login to continue")
                 .foregroundColor(.gray)
             
-            // Email
             TextField("Email", text: $email)
                 .padding()
                 .background(Color(.systemGray6))
